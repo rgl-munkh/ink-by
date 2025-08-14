@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { db } from '../index'
 import { users, userProfiles, UserType } from '../schema'
 import type { User, NewUser, UserProfile, NewUserProfile } from '../schema'

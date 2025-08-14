@@ -17,6 +17,7 @@ import type {
   BookingStatus as BookingStatusEnum,
   PaymentStatus as PaymentStatusEnum,
 } from '@/db/schema'
+import type { Session } from '@supabase/supabase-js'
 
 // Re-export database types
 export type {
@@ -84,3 +85,38 @@ export interface BookingForm {
   tattooIdeas: TattooIdeas
   notes?: string
 }
+
+// Auth Result types for better type safety
+export interface AuthError {
+  message: string
+  code?: string
+  details?: string
+}
+
+export interface AuthSuccess<T = unknown> {
+  data: T
+  error: null
+}
+
+export interface AuthFailure {
+  data: null
+  error: AuthError
+}
+
+export type AuthResult<T = unknown> = AuthSuccess<T> | AuthFailure
+
+// Specific auth result types
+export type SignUpResult = AuthResult<{
+  user: User | null
+  session: Session | null
+}>
+
+export type SignInResult = AuthResult<{
+  user: User
+  session: Session
+}>
+
+export type UserProfileResult = AuthResult<{
+  user: User
+  userProfile: UserProfile | null
+}>

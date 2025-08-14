@@ -1,7 +1,6 @@
 'use client'
 
 import { useAuthContext } from '@/components/auth'
-import { userQueries } from '@/db/queries/users'
 
 export function useAuth() {
   return useAuthContext()
@@ -26,7 +25,19 @@ export function useProfileCompletion() {
   
   const checkCompletion = async () => {
     if (!user) return false
-    return await userQueries.checkProfileComplete(user.id)
+    
+    try {
+      const response = await fetch('/api/auth/user', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'checkProfileComplete' })
+      })
+      const result = await response.json()
+      return result.isComplete || false
+    } catch (error) {
+      console.error('Error checking profile completion:', error)
+      return false
+    }
   }
   
   return {

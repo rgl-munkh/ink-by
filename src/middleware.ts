@@ -2,35 +2,8 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { env } from './lib/env'
-
-// Routes that require authentication
-const protectedRoutes = [
-  '/dashboard',
-  '/profile',
-  '/bookings',
-  '/portfolio',
-  '/availability',
-  '/settings'
-]
-
-// Routes that are only for authenticated users (redirect to dashboard if already logged in)
-const authRoutes = [
-  '/auth/login',
-  '/auth/register',
-  '/auth/forgot-password'
-]
-
-// Routes that require specific user types
-const roleBasedRoutes = {
-  tattooist: [
-    '/portfolio',
-    '/availability',
-    '/dashboard/tattooist'
-  ],
-  customer: [
-    '/dashboard/customer'
-  ]
-}
+import { PROTECTED_ROUTES, AUTH_ROUTES, ROLE_ROUTES, ROUTES } from '@/config/routes'
+import type { UserTypeValue } from '@/types'
 
 export async function middleware(request: NextRequest) {
   try {
@@ -73,12 +46,12 @@ export async function middleware(request: NextRequest) {
     const pathname = url.pathname
 
     // Check if route is protected
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
-    const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
+    const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route))
+    const isAuthRoute = AUTH_ROUTES.some(route => pathname.startsWith(route))
 
     // Redirect to login if accessing protected route without session
     if (isProtectedRoute && !user) {
-      url.pathname = '/auth/login'
+      url.pathname = ROUTES.AUTH.LOGIN
       url.searchParams.set('redirectTo', pathname)
       return NextResponse.redirect(url)
     }
@@ -87,22 +60,25 @@ export async function middleware(request: NextRequest) {
     if (isAuthRoute && user) {
       // Get user metadata to determine redirect
       const userType = user.user_metadata?.user_type || 'customer'
-      url.pathname = userType === 'tattooist' ? '/dashboard/tattooist' : '/dashboard/customer'
+      url.pathname = userType === 'tattooist' ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
       url.searchParams.delete('redirectTo')
       return NextResponse.redirect(url)
     }
 
     // Check role-based access
     if (user && isProtectedRoute) {
-      const userType = user.user_metadata?.user_type as 'customer' | 'tattooist'
+      const userType = user.user_metadata?.user_type as UserTypeValue
       
-      // Check if this route requires a specific role
-      for (const [role, routes] of Object.entries(roleBasedRoutes)) {
-        const requiresThisRole = routes.some(route => pathname.startsWith(route))
+      if (userType && ROLE_ROUTES[userType]) {
+        // Check if user is accessing a route they're not allowed to
+        const otherRoleRoutes = Object.entries(ROLE_ROUTES)
+          .filter(([role]) => role !== userType)
+          .flatMap(([, routes]) => routes)
+          .some(route => pathname.startsWith(route))
         
-        if (requiresThisRole && userType !== role) {
+        if (otherRoleRoutes) {
           // Redirect to appropriate dashboard
-          url.pathname = userType === 'tattooist' ? '/dashboard/tattooist' : '/dashboard/customer'
+          url.pathname = userType === 'tattooist' ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
           return NextResponse.redirect(url)
         }
       }
@@ -117,10 +93,10 @@ export async function middleware(request: NextRequest) {
     
     const url = request.nextUrl.clone()
     const pathname = url.pathname
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+    const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route))
     
     if (isProtectedRoute) {
-      url.pathname = '/auth/login'
+      url.pathname = ROUTES.AUTH.LOGIN
       url.searchParams.set('redirectTo', pathname)
       return NextResponse.redirect(url)
     }

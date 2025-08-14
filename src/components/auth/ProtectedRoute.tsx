@@ -17,7 +17,7 @@ export function ProtectedRoute({
   requireAuth = true,
   redirectTo 
 }: ProtectedRouteProps) {
-  const { loading, isAuthenticated, user } = useAuth()
+  const { loading, isAuthenticated } = useAuth()
   const { userType } = useRole()
   const router = useRouter()
 
