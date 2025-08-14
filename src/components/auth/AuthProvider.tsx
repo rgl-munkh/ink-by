@@ -4,18 +4,17 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { auth } from '@/lib/supabase'
 import type { UserWithProfile } from '@/db/queries/users'
 import type { User } from '@supabase/supabase-js'
-import type { AuthResult } from '@/types'
 
 interface AuthContextType {
   user: User | null
   userProfile: UserWithProfile | null
   loading: boolean
   isAuthenticated: boolean
-  signUp: (email: string, password: string, userType: 'customer' | 'tattooist', fullName?: string) => Promise<AuthResult<unknown>>
-  signIn: (email: string, password: string) => Promise<AuthResult<unknown>>
-  signOut: () => Promise<AuthResult<unknown>>
-  resetPassword: (email: string) => Promise<AuthResult<unknown>>
-  updatePassword: (password: string) => Promise<AuthResult<unknown>>
+  signUp: (email: string, password: string, userType: 'customer' | 'tattooist', fullName?: string) => Promise<{ data: unknown; error: unknown }>
+  signIn: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>
+  signOut: () => Promise<{ data: unknown; error: unknown }>
+  resetPassword: (email: string) => Promise<{ data: unknown; error: unknown }>
+  updatePassword: (password: string) => Promise<{ data: unknown; error: unknown }>
   refreshProfile: () => Promise<void>
 }
 
