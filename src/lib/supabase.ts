@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 import { createServerClient as createSSRClient } from '@supabase/ssr'
 import { env } from './env'
 import { cookies } from 'next/headers'
+import type { UserTypeValues } from '@/types'
 
 const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -61,7 +62,7 @@ export const createServerSupabaseClient = async () => {
 // Auth helper functions
 export const auth = {
   // Sign up new user with email and password
-  signUp: async (email: string, password: string, userType: 'customer' | 'tattooist', metadata?: { fullName?: string }) => {
+  signUp: async (email: string, password: string, userType: UserTypeValues, metadata?: { fullName?: string }) => {
     return await supabase.auth.signUp({
       email,
       password,

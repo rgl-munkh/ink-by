@@ -2,19 +2,21 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { auth } from '@/lib/supabase'
+import { authAPI } from '@/lib/auth-api'
 import type { UserWithProfile } from '@/db/queries/users'
-import type { User } from '@supabase/supabase-js'
+import type { User, Session } from '@supabase/supabase-js'
+import type { AuthResult, UserTypeValues } from '@/types'
 
 interface AuthContextType {
   user: User | null
   userProfile: UserWithProfile | null
   loading: boolean
   isAuthenticated: boolean
-  signUp: (email: string, password: string, userType: 'customer' | 'tattooist', fullName?: string) => Promise<{ data: unknown; error: unknown }>
-  signIn: (email: string, password: string) => Promise<{ data: unknown; error: unknown }>
-  signOut: () => Promise<{ data: unknown; error: unknown }>
-  resetPassword: (email: string) => Promise<{ data: unknown; error: unknown }>
-  updatePassword: (password: string) => Promise<{ data: unknown; error: unknown }>
+  signUp: (email: string, password: string, userType: UserTypeValues, fullName?: string) => Promise<AuthResult<{ user: User; session: Session }>>
+  signIn: (email: string, password: string) => Promise<AuthResult<{ user: User; session: Session }>>
+  signOut: () => Promise<AuthResult<void>>
+  resetPassword: (email: string) => Promise<AuthResult<void>>
+  updatePassword: (password: string) => Promise<AuthResult<{ user: User }>>
   refreshProfile: () => Promise<void>
 }
 
@@ -38,23 +40,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (session?.user) {
           setUser(session.user)
           
-          // Load user profile from API
-          try {
-            const response = await fetch('/api/auth/user')
-            if (response.ok) {
-              const result = await response.json()
-              setUserProfile(result.data?.userProfile || null)
-            }
-          } catch (error) {
-            console.error('Error loading user profile:', error)
+          // Load user profile and update last login via centralized API
+          const profileData = await authAPI.getUserProfile()
+          if (profileData) {
+            setUserProfile(profileData.userProfile)
           }
-
+          
           // Update last login
-          fetch('/api/auth/user', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'updateLastLogin' })
-          }).catch(console.error)
+          await authAPI.updateLastLogin()
         }
       } catch (error) {
         console.error('Error loading user:', error)
@@ -73,38 +66,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (event === 'SIGNED_IN' && session?.user) {
           setUser(session.user)
           
-          // Load profile via API
-          try {
-            const response = await fetch('/api/auth/user')
-            if (response.ok) {
-              const result = await response.json()
-              setUserProfile(result.data?.userProfile || null)
-            }
-          } catch (error) {
-            console.error('Error loading profile:', error)
+          // Load profile and update last login via centralized API
+          const profileData = await authAPI.getUserProfile()
+          if (profileData) {
+            setUserProfile(profileData.userProfile)
           }
-
-          // Update last login
-          fetch('/api/auth/user', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'updateLastLogin' })
-          }).catch(console.error)
+          
+          await authAPI.updateLastLogin()
         } else if (event === 'SIGNED_OUT') {
           setUser(null)
           setUserProfile(null)
         } else if (event === 'USER_UPDATED' && session?.user) {
           setUser(session.user)
           
-          // Refresh profile data via API
-          try {
-            const response = await fetch('/api/auth/user')
-            if (response.ok) {
-              const result = await response.json()
-              setUserProfile(result.data?.userProfile || null)
-            }
-          } catch (error) {
-            console.error('Error refreshing profile:', error)
+          // Refresh profile data via centralized API
+          const profileData = await authAPI.getUserProfile()
+          if (profileData) {
+            setUserProfile(profileData.userProfile)
           }
         }
       } catch (error) {
@@ -120,67 +98,153 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [])
 
   // Auth actions
-  const signUp = async (email: string, password: string, userType: 'customer' | 'tattooist', fullName?: string) => {
+  const signUp = async (email: string, password: string, userType: UserTypeValues, fullName?: string): Promise<AuthResult<{ user: User; session: Session }>> => {
     try {
       const response = await auth.signUp(email, password, userType, { fullName })
       
-      if (response.error) throw response.error
+      if (response.error) {
+        return { 
+          data: null, 
+          error: { 
+            message: response.error.message, 
+            code: response.error.code || 'SIGNUP_ERROR' 
+          } 
+        }
+      }
       
       // Profile creation will be handled by Supabase triggers or other server logic
       
-      return { data: response.data, error: null }
+      return { 
+        data: response.data as { user: User; session: Session }, 
+        error: null 
+      }
     } catch (error) {
-      return { data: null, error }
+      return { 
+        data: null, 
+        error: { 
+          message: error instanceof Error ? error.message : 'Unknown error', 
+          code: 'SIGNUP_EXCEPTION' 
+        } 
+      }
     }
   }
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string): Promise<AuthResult<{ user: User; session: Session }>> => {
     try {
       const response = await auth.signIn(email, password)
-      return { data: response.data, error: response.error }
+      
+      if (response.error) {
+        return { 
+          data: null, 
+          error: { 
+            message: response.error.message, 
+            code: response.error.code || 'SIGNIN_ERROR' 
+          } 
+        }
+      }
+      
+      return { 
+        data: response.data as { user: User; session: Session }, 
+        error: null 
+      }
     } catch (error) {
-      return { data: null, error }
+      return { 
+        data: null, 
+        error: { 
+          message: error instanceof Error ? error.message : 'Unknown error', 
+          code: 'SIGNIN_EXCEPTION' 
+        } 
+      }
     }
   }
 
-  const signOut = async () => {
+  const signOut = async (): Promise<AuthResult<void>> => {
     try {
       const response = await auth.signOut()
-      return { data: null, error: response.error }
+      
+      if (response.error) {
+        return { 
+          data: null, 
+          error: { 
+            message: response.error.message, 
+            code: response.error.code || 'SIGNOUT_ERROR' 
+          } 
+        }
+      }
+      
+      return { data: undefined as void, error: null }
     } catch (error) {
-      return { data: null, error }
+      return { 
+        data: null, 
+        error: { 
+          message: error instanceof Error ? error.message : 'Unknown error', 
+          code: 'SIGNOUT_EXCEPTION' 
+        } 
+      }
     }
   }
 
-  const resetPassword = async (email: string) => {
+  const resetPassword = async (email: string): Promise<AuthResult<void>> => {
     try {
       const response = await auth.resetPassword(email)
-      return { data: response.data, error: response.error }
+      
+      if (response.error) {
+        return { 
+          data: null, 
+          error: { 
+            message: response.error.message, 
+            code: response.error.code || 'RESET_PASSWORD_ERROR' 
+          } 
+        }
+      }
+      
+      return { data: undefined as void, error: null }
     } catch (error) {
-      return { data: null, error }
+      return { 
+        data: null, 
+        error: { 
+          message: error instanceof Error ? error.message : 'Unknown error', 
+          code: 'RESET_PASSWORD_EXCEPTION' 
+        } 
+      }
     }
   }
 
-  const updatePassword = async (password: string) => {
+  const updatePassword = async (password: string): Promise<AuthResult<{ user: User }>> => {
     try {
       const response = await auth.updatePassword(password)
-      return { data: response.data?.user || null, error: response.error }
+      
+      if (response.error) {
+        return { 
+          data: null, 
+          error: { 
+            message: response.error.message, 
+            code: response.error.code || 'UPDATE_PASSWORD_ERROR' 
+          } 
+        }
+      }
+      
+      return { 
+        data: { user: response.data?.user as User }, 
+        error: null 
+      }
     } catch (error) {
-      return { data: null, error }
+      return { 
+        data: null, 
+        error: { 
+          message: error instanceof Error ? error.message : 'Unknown error', 
+          code: 'UPDATE_PASSWORD_EXCEPTION' 
+        } 
+      }
     }
   }
 
   const refreshProfile = async () => {
     if (!user) return
 
-    try {
-      const response = await fetch('/api/auth/user')
-      if (response.ok) {
-        const result = await response.json()
-        setUserProfile(result.data?.userProfile || null)
-      }
-    } catch (error) {
-      console.error('Error refreshing profile:', error)
+    const profileData = await authAPI.getUserProfile()
+    if (profileData) {
+      setUserProfile(profileData.userProfile)
     }
   }
 

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { userQueries } from '@/db/queries/users'
-import type { AuthResult } from '@/types'
 
 export async function GET() {
   try {

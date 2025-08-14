@@ -3,10 +3,12 @@
 import { useAuth, useRole } from '@/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { USER_TYPES, type UserTypeValues } from '@/types'
+import { ROUTES } from '@/config/routes'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
-  requiredRole?: 'customer' | 'tattooist'
+  requiredRole?: UserTypeValues
   requireAuth?: boolean
   redirectTo?: string
 }
@@ -26,7 +28,7 @@ export function ProtectedRoute({
 
     // Check authentication requirement
     if (requireAuth && !isAuthenticated) {
-      const redirect = redirectTo || '/auth/login'
+      const redirect = redirectTo || ROUTES.AUTH.LOGIN
       router.push(redirect)
       return
     }
@@ -34,7 +36,7 @@ export function ProtectedRoute({
     // Check role requirement
     if (requiredRole && userType !== requiredRole) {
       // Redirect to appropriate dashboard based on user type
-      const dashboard = userType === 'tattooist' ? '/dashboard/tattooist' : '/dashboard/customer'
+      const dashboard = userType === USER_TYPES.TATTOOIST ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
       router.push(dashboard)
       return
     }
@@ -66,7 +68,7 @@ export function ProtectedRoute({
 export function withAuth<T extends object>(
   Component: React.ComponentType<T>,
   options?: {
-    requiredRole?: 'customer' | 'tattooist'
+    requiredRole?: UserTypeValues
     redirectTo?: string
   }
 ) {
@@ -85,7 +87,7 @@ export function withAuth<T extends object>(
 // Component for conditional rendering based on role
 interface RoleGuardProps {
   children: React.ReactNode
-  allowedRoles: ('customer' | 'tattooist')[]
+  allowedRoles: UserTypeValues[]
   fallback?: React.ReactNode
 }
 

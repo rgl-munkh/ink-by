@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server'
 import { env } from './lib/env'
 import { PROTECTED_ROUTES, AUTH_ROUTES, ROLE_ROUTES, ROUTES } from '@/config/routes'
 import type { UserTypeValue } from '@/types'
+import { USER_TYPES } from '@/types'
 
 export async function middleware(request: NextRequest) {
   try {
@@ -59,8 +60,8 @@ export async function middleware(request: NextRequest) {
     // Redirect to dashboard if accessing auth routes while logged in
     if (isAuthRoute && user) {
       // Get user metadata to determine redirect
-      const userType = user.user_metadata?.user_type || 'customer'
-      url.pathname = userType === 'tattooist' ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
+      const userType = user.user_metadata?.user_type || USER_TYPES.CUSTOMER
+      url.pathname = userType === USER_TYPES.TATTOOIST ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
       url.searchParams.delete('redirectTo')
       return NextResponse.redirect(url)
     }
@@ -78,7 +79,7 @@ export async function middleware(request: NextRequest) {
         
         if (otherRoleRoutes) {
           // Redirect to appropriate dashboard
-          url.pathname = userType === 'tattooist' ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
+          url.pathname = userType === USER_TYPES.TATTOOIST ? ROUTES.DASHBOARD.TATTOOIST : ROUTES.DASHBOARD.CUSTOMER
           return NextResponse.redirect(url)
         }
       }

@@ -44,6 +44,14 @@ export type UserType = UserTypeValue
 export type BookingStatus = BookingStatusValue  
 export type PaymentStatus = PaymentStatusValue
 
+// Centralized user type constants to avoid string literal repetition
+export const USER_TYPES = {
+  CUSTOMER: 'customer',
+  TATTOOIST: 'tattooist'
+} as const
+
+export type UserTypeValues = typeof USER_TYPES[keyof typeof USER_TYPES]
+
 export interface TattooIdeas {
   description: string
   images: string[]
