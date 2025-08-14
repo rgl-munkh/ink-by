@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, uuid, boolean, integer, jsonb, pgEnum, index } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { nanoid } from 'nanoid'
 
 // PostgreSQL Enums for better type safety and constraints
 export const userTypeEnum = pgEnum('user_type', ['customer', 'tattooist'])
@@ -23,12 +24,15 @@ export const users = pgTable('users', {
 
 // User profiles table for additional user information
 export const userProfiles = pgTable('user_profiles', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').references(() => users.id).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => nanoid()),
+  userId: uuid('user_id').references(() => users.id).notNull().unique(),
   bio: text('bio'),
   location: text('location'),
   phone: text('phone'),
   website: text('website'),
+  isProfileComplete: boolean('is_profile_complete').default(false).notNull(),
+  isEmailVerified: boolean('is_email_verified').default(false).notNull(),
+  lastLoginAt: timestamp('last_login_at'),
   preferences: jsonb('preferences').$type<Record<string, unknown>>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -39,7 +43,7 @@ export const userProfiles = pgTable('user_profiles', {
 
 // Portfolio items for tattooists
 export const portfolioItems = pgTable('portfolio_items', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => nanoid()),
   tattooistId: uuid('tattooist_id').references(() => users.id).notNull(),
   title: text('title').notNull(),
   description: text('description'),
@@ -59,7 +63,7 @@ export const portfolioItems = pgTable('portfolio_items', {
 
 // Availability slots for tattooists
 export const availabilitySlots = pgTable('availability_slots', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => nanoid()),
   tattooistId: uuid('tattooist_id').references(() => users.id).notNull(),
   startTime: timestamp('start_time').notNull(),
   endTime: timestamp('end_time').notNull(),
@@ -78,10 +82,10 @@ export const availabilitySlots = pgTable('availability_slots', {
 
 // Bookings/appointments
 export const bookings = pgTable('bookings', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey().$defaultFn(() => nanoid()),
   customerId: uuid('customer_id').references(() => users.id).notNull(),
   tattooistId: uuid('tattooist_id').references(() => users.id).notNull(),
-  slotId: uuid('slot_id').references(() => availabilitySlots.id).notNull(),
+  slotId: text('slot_id').references(() => availabilitySlots.id).notNull(),
   status: bookingStatusEnum('status').notNull(),
   depositAmount: integer('deposit_amount'), // Amount in cents
   totalAmount: integer('total_amount'), // Amount in cents
