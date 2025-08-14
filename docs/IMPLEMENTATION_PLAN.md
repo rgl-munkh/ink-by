@@ -5,7 +5,7 @@
 ### Epic 1: Project Setup & Foundation (8 points)
 **Goal**: Set up the technical foundation for the platform
 
-#### Task 1.1: Project Infrastructure Setup (3 points)
+#### Task 1.1: Project Infrastructure Setup (3 points) - DONE
 - **Description**: Initialize Next.js project with TypeScript, set up Supabase database, configure development environment
 - **Acceptance Criteria**:
   - Next.js 14+ with TypeScript configured
@@ -28,7 +28,6 @@
 - **Acceptance Criteria**:
   - shadcn/ui components installed and configured
   - Tailwind CSS with custom theme
-  - Basic layout components (Header, Footer, Container)
 - **Implementation Plan**:
   1. Install and configure shadcn/ui
   2. Set up Tailwind CSS with custom configuration
