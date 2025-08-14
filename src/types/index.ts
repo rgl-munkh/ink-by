@@ -1,4 +1,4 @@
-// Import database types
+// Import database types and enums
 import type {
   User,
   NewUser,
@@ -10,6 +10,12 @@ import type {
   NewAvailabilitySlot,
   Booking,
   NewBooking,
+  UserTypeValue,
+  BookingStatusValue,
+  PaymentStatusValue,
+  UserType as UserTypeEnum,
+  BookingStatus as BookingStatusEnum,
+  PaymentStatus as PaymentStatusEnum,
 } from '@/db/schema'
 
 // Re-export database types
@@ -24,14 +30,18 @@ export type {
   NewAvailabilitySlot,
   Booking,
   NewBooking,
+  UserTypeValue,
+  BookingStatusValue,
+  PaymentStatusValue,
 }
 
-// App-specific types
-export type UserType = 'customer' | 'tattooist'
+// Re-export enum constants for use in components
+export { UserTypeEnum as UserType, BookingStatusEnum as BookingStatus, PaymentStatusEnum as PaymentStatus }
 
-export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed'
-
-export type PaymentStatus = 'pending' | 'paid' | 'refunded'
+// Type aliases for better ergonomics (using schema-derived types)
+export type UserType = UserTypeValue
+export type BookingStatus = BookingStatusValue  
+export type PaymentStatus = PaymentStatusValue
 
 export interface TattooIdeas {
   description: string
