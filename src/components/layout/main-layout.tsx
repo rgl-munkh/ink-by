@@ -1,17 +1,10 @@
-import { cn } from "@/lib/utils"
-
 interface MainLayoutProps {
   children: React.ReactNode
-  className?: string
 }
 
-export function MainLayout({ children, className }: MainLayoutProps) {
+export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className={cn(
-      "min-h-screen bg-background text-foreground",
-      "flex flex-col",
-      className
-    )}>
+    <div className="min-h-screen bg-background text-foreground">
       {children}
     </div>
   )
