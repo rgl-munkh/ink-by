@@ -1,7 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { env } from './lib/env'
 import { PROTECTED_ROUTES, AUTH_ROUTES, ROLE_ROUTES, ROUTES } from '@/config/routes'
 import type { UserTypeValue } from '@/types'
 import { USER_TYPES } from '@/types'
@@ -17,8 +16,8 @@ export async function middleware(request: NextRequest) {
 
     // Create Supabase client
     const supabase = createServerClient(
-      env.NEXT_PUBLIC_SUPABASE_URL,
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
       {
         cookies: {
           getAll() {
