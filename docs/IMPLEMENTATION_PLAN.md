@@ -59,21 +59,23 @@
 ### Epic 2: User Management (13 points)
 **Goal**: Enable user registration, login, and profile management
 
-#### Task 2.1: User Registration & Login UI (5 points)
+#### Task 2.1: User Registration & Login UI (5 points) - DONE
 - **Description**: Create registration and login forms for both user types
 - **Acceptance Criteria**:
-  - Registration form with user type selection
-  - Login form with validation
-  - Password reset functionality
-  - Mobile-responsive design
+  - Registration form with user type selection ✅
+  - Login form with validation ✅
+  - Password reset functionality ✅
+  - Mobile-responsive design ✅
 - **Implementation Plan**:
-  1. Create registration form component
-  2. Create login form component
-  3. Add form validation with react-hook-form
-  4. Implement user type selection (Customer/Tattooist)
-  5. Add password reset flow
-- **Dependencies**: Task 1.2, 1.3
+  1. Create registration form component ✅
+  2. Create login form component ✅
+  3. Add form validation with react-hook-form ✅
+  4. Implement user type selection (Customer/Tattooist) ✅
+  5. Add password reset flow ✅
+- **Dependencies**: Task 1.2 ✅, 1.3 ✅
 - **Estimated Time**: 6-8 hours
+- **Actual Time**: ~6 hours
+- **PR**: #4
 
 #### Task 2.2: User Profile Management (5 points)
 - **Description**: Allow users to view and edit their profiles
