@@ -1,9 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
-import { env } from './env'
 import type { UserTypeValues } from '@/types'
 
-const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 // Create a single supabase client for interacting with your database (CLIENT-SIDE ONLY)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -58,7 +57,7 @@ export const auth = {
   // Reset password
   resetPassword: async (email: string) => {
     return await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${env.NEXT_PUBLIC_APP_URL}/auth/reset-password`
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`
     })
   },
 

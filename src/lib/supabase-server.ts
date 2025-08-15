@@ -1,17 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 import { createServerClient as createSSRClient } from '@supabase/ssr'
-import { env } from './env'
 import { cookies } from 'next/headers'
 
-const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
 
 // Service client for server-side operations (with service role key)
 export const createServiceClient = () => {
-  if (!env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for server-side operations')
   }
-  return createClient(supabaseUrl, env.SUPABASE_SERVICE_ROLE_KEY, {
+  return createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY || '', {
     auth: {
       autoRefreshToken: false,
       persistSession: false
