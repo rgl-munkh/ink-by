@@ -1,2 +1,5 @@
 export { AuthProvider, useAuthContext } from './AuthProvider'
 export { ProtectedRoute, withAuth, RoleGuard, AuthGuard } from './ProtectedRoute'
+export { LoginForm } from './LoginForm'
+export { RegisterForm } from './RegisterForm'
+export { ForgotPasswordForm } from './ForgotPasswordForm'
