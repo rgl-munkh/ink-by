@@ -30,9 +30,11 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isAuthRoute =
     pathname.startsWith("/login") || pathname.startsWith("/signup");
+  const isAuthApiRoute = pathname.startsWith("/api/auth/");
   const isPublicRoute =
     pathname === "/" ||
     isAuthRoute ||
+    isAuthApiRoute ||
     (pathname.startsWith("/artist/") && !pathname.includes("/profile"));
 
   if (!data?.user) {
