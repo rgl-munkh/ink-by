@@ -1,0 +1,1 @@
+ALTER TABLE "booking_requests" ADD COLUMN "reference_image_urls" jsonb DEFAULT '[]'::jsonb;
