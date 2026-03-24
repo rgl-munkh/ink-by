@@ -1,7 +1,6 @@
 'use client'
 
 import type { GalleryItem } from "@/lib/gallery";
-import { GalleryCard } from "./GalleryCard";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ChevronRightIcon } from "lucide-react";
@@ -18,8 +17,8 @@ const LeftColumn = ({ item, index }: { item: GalleryItem, index: number }) => {
     router.push(`/artist/${item.artistId}`);
   }
   return (
-    <div style={{ width: "165.5px" }} className="m-2 cursor-pointer" onClick={handleClick}>
-      <Image src={item.imageUrl} alt={item.artistName} width={165.5} height={221.15} className="rounded-lg h-[221.15px] w-full object-cover" />
+    <div className="w-full m-2 cursor-pointer" onClick={handleClick}>
+      <Image src={item.imageUrl} alt={item.artistName} width={500} height={667} className="rounded-lg aspect-[3/4] w-full object-cover" />
 
       <div className="flex justify-between items-center gap-2 mt-2">
         <div className="flex gap-2 items-center">
@@ -53,8 +52,8 @@ const RightColumn = ({ item, index }: { item: GalleryItem, index: number }) => {
     router.push(`/artist/${item.artistId}`);
   }
   return (
-    <div style={{ width: "165.5px" }} className="m-2 cursor-pointer" onClick={handleClick}>
-      <Image src={item.imageUrl} alt={item.artistName} width={165.5} height={165.5} className="rounded-lg h-[165.5px] w-full object-cover" />
+    <div className="w-full m-2 cursor-pointer" onClick={handleClick}>
+      <Image src={item.imageUrl} alt={item.artistName} width={500} height={500} className="rounded-lg aspect-square w-full object-cover" />
 
       <div className="flex justify-between items-center gap-2 mt-2">
         <div className="flex gap-2 items-center">
@@ -85,9 +84,9 @@ export function TattooGallery({ items }: TattooGalleryProps) {
   const leftColumnItems = items.slice(0, items.length % 2 === 0 ? items.length / 2 : (items.length / 2) + 1);
   const rightColumnItems = items.slice(items.length % 2 === 0 ? items.length / 2 : (items.length / 2) + 1);
   return (
-    <section id="gallery" className="w-full mx-auto pb-24 flex gap-1">
+    <section id="gallery" className="w-full pb-24  flex gap-2">
 
-      <div>
+      <div className="flex-1 min-w-0">
         {
           leftColumnItems.map((item, index) => {
             const isOdd = index % 2 === 0;
@@ -100,7 +99,7 @@ export function TattooGallery({ items }: TattooGalleryProps) {
         }
       </div>
 
-      <div>
+      <div className="flex-1 min-w-0">
         {
           rightColumnItems.map((item, index) => {
             const isOdd = index % 2 === 0;

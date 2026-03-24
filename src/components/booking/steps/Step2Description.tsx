@@ -22,22 +22,24 @@ export function Step2Description({
   const isValid = description.length >= 10;
 
   return (
-    <div className="px-4 pb-8">
-      <p className="text-lg font-bold text-center mb-6">
-        🤔 Шивээсний утга учир ямар байлгмаар байна вэ?
-      </p>
+    <div className="px-4 w-full h-full justify-between flex flex-col">
+      <div className="flex flex-col gap-2">
+        <p className="text-lg font-bold text-center mb-6">
+          🧐 Шивээсний утга учир ямар байлгмаар байна вэ?
+        </p>
 
-      <Textarea
-        placeholder={PLACEHOLDER}
-        value={description}
-        onChange={(e) => onDescriptionChange(e.target.value)}
-        className="min-h-[120px] rounded-xl resize-none"
-      />
+        <Textarea
+          placeholder={PLACEHOLDER}
+          value={description}
+          onChange={(e) => onDescriptionChange(e.target.value)}
+          className="min-h-[120px] rounded-xl resize-none"
+        />
 
-      {error && (
-        <p className="text-destructive text-sm mt-2">{error}</p>
-      )}
+        {error && (
+          <p className="text-destructive text-sm mt-2">{error}</p>
+        )}
 
+      </div>
       <Button
         className="w-full mt-8 rounded-xl py-6"
         size="lg"

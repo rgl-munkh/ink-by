@@ -14,7 +14,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
   if (items.length === 0) return null;
 
   return (
-    <section className="px-4 pb-8">
+    <section className="px-4 w-full pb-8">
       <div className="grid grid-cols-2 gap-4">
         {items.map((item) => (
           <div key={item.id} className="overflow-hidden">

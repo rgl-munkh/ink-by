@@ -6,6 +6,7 @@ import { ArtistProfile } from "@/components/artist/ArtistProfile";
 import { FeaturedArtwork } from "@/components/artist/FeaturedArtwork";
 import { PortfolioGallery } from "@/components/artist/PortfolioGallery";
 import { BookingRequestStepper } from "@/components/booking/BookingRequestStepper";
+import { Container } from "@/components/common";
 
 export interface ArtistPageContentProps {
   artistId: number;
@@ -37,7 +38,7 @@ export function ArtistPageContent({
   }
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto pb-12">
+    <Container className="min-h-screen max-w-lg mx-auto pb-12">
       <ArtistHeader onSelect={() => setShowBooking(true)} />
       <ArtistProfile name={artistName} instagramUsername={instagramUsername} />
       {featuredImageUrl && (
@@ -49,6 +50,6 @@ export function ArtistPageContent({
         />
       )}
       <PortfolioGallery items={galleryItems} />
-    </div>
+    </Container>
   );
 }

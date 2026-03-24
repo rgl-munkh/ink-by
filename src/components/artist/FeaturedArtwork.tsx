@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ExternalLink, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function getInitials(name: string): string {
@@ -40,37 +40,41 @@ export function FeaturedArtwork({
   };
 
   return (
-    <section className="px-4 pb-8">
+    <section className="px-4 w-full pb-8">
       <div className="rounded-xl overflow-hidden bg-muted">
         {/* biome-ignore lint/performance/noImgElement: external portfolio URL */}
         <img
           src={imageUrl}
           alt={artistName}
-          className="w-full aspect-[3/4] object-cover"
+          className="w-full aspect-3/4 object-cover"
         />
       </div>
       <div className="flex items-center justify-between mt-3 px-1">
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="size-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground shrink-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="size-10 rounded-full bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground shrink-0">
             {getInitials(artistName)}
           </div>
-          <span className="font-medium truncate">{handle}</span>
-          {instagramUrl && (
-            <Link
-              href={instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground shrink-0"
-            >
-              Instagram
-              <ExternalLink className="size-3" />
-            </Link>
-          )}
+          <div className="flex flex-col min-w-0">
+            <span className="font-medium truncate">{handle}</span>
+            {instagramUrl ? (
+              <Link
+                href={instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
+                Instagram
+              </Link>
+            ) : (
+              <span className="text-sm text-muted-foreground">Instagram</span>
+            )}
+          </div>
         </div>
+
         <Button
           variant="outline"
-          size="sm"
-          className="rounded-xl shrink-0"
+          size="lg"
+          className="rounded-full shrink-0 px-6"
           onClick={handleSelect}
         >
           Үргэлжлүүлэх

@@ -25,7 +25,7 @@ export function Step3Size({
   onContinue,
 }: Step3SizeProps) {
   return (
-    <div className="px-4 pb-8">
+    <div className="px-4 w-full pb-8">
       <p className="text-lg font-bold text-center mb-6">
         🍌 Шивээс хийлгэх хэмжээ?
       </p>

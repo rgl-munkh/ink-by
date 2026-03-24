@@ -7,6 +7,7 @@ import { Step1ImageUpload } from "./steps/Step1ImageUpload";
 import { Step2Description } from "./steps/Step2Description";
 import { Step3Size, type SizeValue } from "./steps/Step3Size";
 import { Step4Placement } from "./steps/Step4Placement";
+import { Container } from "../common";
 
 const TOTAL_STEPS = 4;
 
@@ -74,7 +75,7 @@ export function BookingRequestStepper({
   };
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto">
+    <Container >
       <StepperHeader
         step={step}
         totalSteps={TOTAL_STEPS}
@@ -121,6 +122,6 @@ export function BookingRequestStepper({
           {error}
         </p>
       )}
-    </div>
+    </Container>
   );
 }
