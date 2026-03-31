@@ -20,7 +20,7 @@ export function ArtistHeader({ onSelect }: ArtistHeaderProps) {
   };
 
   return (
-    <header className="flex items-center justify-between px-4 py-3 border-b">
+    <header className="flex items-center w-full justify-between px-4 py-2">
       <Button
         variant="outline"
         size="sm"
@@ -35,8 +35,8 @@ export function ArtistHeader({ onSelect }: ArtistHeaderProps) {
         className="rounded-xl"
         onClick={handleSelect}
       >
-        <Check className="size-4" />
         Сонгох
+        <Check className="size-4" />
       </Button>
     </header>
   );

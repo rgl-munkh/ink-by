@@ -46,7 +46,7 @@ export function Step4Placement({
   };
 
   return (
-    <div className="px-4 pb-8">
+    <div className="px-4 w-full pb-8">
       <p className="text-lg font-bold text-center mb-6">
         👀 Хаана хийлгэх вэ?
       </p>
@@ -79,7 +79,7 @@ export function Step4Placement({
       </div>
 
       <div className="rounded-xl border bg-muted/30 p-6 mb-6">
-        <div className="aspect-[226/373] max-h-[330px] w-full max-w-[200px] mx-auto flex items-center justify-center rounded-lg overflow-hidden">
+        <div className="aspect-226/373 max-h-[330px] w-full max-w-[200px] mx-auto flex items-center justify-center rounded-lg overflow-hidden">
           {side === "front" ? (
             <BodyDiagramFront
               selectedKey={selectedKey}

@@ -35,7 +35,7 @@ export function StepperHeader({
   const progress = PROGRESS_BY_STEP[step] ?? Math.round((step / totalSteps) * 100);
 
   return (
-    <header className="flex flex-col items-center px-4 pt-4 pb-2">
+    <header className="flex flex-col items-center w-full px-4 pt-4 pb-2">
       <div className="flex items-center justify-between w-full mb-4">
         <Button
           variant="outline"

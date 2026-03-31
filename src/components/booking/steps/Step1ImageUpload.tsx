@@ -67,7 +67,7 @@ export function Step1ImageUpload({
   };
 
   return (
-    <div className="px-4 pb-8">
+    <div className="px-4 w-full pb-8">
       <p className="text-lg font-bold text-center mb-6">
         👀 Танд харуулах шивээсний зураг байгаа юу?
       </p>
@@ -76,7 +76,7 @@ export function Step1ImageUpload({
         {[0, 1, 2].map((index) => (
           <div
             key={index}
-            className="relative aspect-[4/3] rounded-xl border-2 border-dashed border-muted-foreground/20 bg-[repeating-conic-gradient(var(--muted)_0%_25%,transparent_0%_50%)] bg-[length:1rem_1rem] overflow-hidden"
+            className="relative aspect-4/3 rounded-xl border-2 border-dashed border-muted-foreground/20 bg-[repeating-conic-gradient(var(--muted)_0%_25%,transparent_0%_50%)] bg-size-[1rem_1rem] overflow-hidden"
           >
             {imageUrls[index] ? (
               <>
